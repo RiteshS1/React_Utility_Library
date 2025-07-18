@@ -1,0 +1,129 @@
+import React from 'react'
+import { Link, useLocation } from 'react-router-dom'
+import { Home, Code, Component, MousePointer, GitBranch, List, Hash, Eye, Globe, Repeat, Zap, Bookmark, Target, Cpu } from 'lucide-react'
+import './Sidebar.css'
+
+interface NavigationItem {
+  path: string
+  title: string
+  icon: React.ReactNode
+  category: string
+}
+
+
+const navigationItems: NavigationItem[] = [
+  { path: '/', title: 'Home', icon: <Home size={18} />, category: 'Getting Started' },
+  { path: '/jsx-basics', title: 'JSX Basics', icon: <Code size={18} />, category: 'Fundamentals' },
+  { path: '/component-props', title: 'Components & Props', icon: <Component size={18} />, category: 'Fundamentals' },
+  { path: '/event-handling', title: 'Event Handling', icon: <MousePointer size={18} />, category: 'Fundamentals' },
+  { path: '/conditional-rendering', title: 'Conditional Rendering', icon: <GitBranch size={18} />, category: 'Fundamentals' },
+  { path: '/lists-and-keys', title: 'Lists & Keys', icon: <List size={18} />, category: 'Fundamentals' },
+  { path: '/use-state', title: 'useState Hook', icon: <Hash size={18} />, category: 'React Hooks' },
+  { path: '/use-effect', title: 'useEffect Hook', icon: <Eye size={18} />, category: 'React Hooks' },
+  { path: '/use-context', title: 'useContext Hook', icon: <Globe size={18} />, category: 'React Hooks' },
+  { path: '/use-reducer', title: 'useReducer Hook', icon: <Repeat size={18} />, category: 'React Hooks' },
+  { path: '/use-memo', title: 'useMemo Hook', icon: <Zap size={18} />, category: 'React Hooks' },
+  { path: '/use-callback', title: 'useCallback Hook', icon: <Bookmark size={18} />, category: 'React Hooks' },
+  { path: '/use-ref', title: 'useRef Hook', icon: <Target size={18} />, category: 'React Hooks' },
+  { path: '/custom-hooks', title: 'Custom Hooks', icon: <Cpu size={18} />, category: 'Advanced' },
+]
+
+interface SidebarProps {
+  isOpen: boolean
+  onClose: () => void
+  onToggle: () => void
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, onToggle }) => {
+  const location = useLocation()
+  
+  const categories = Array.from(new Set(navigationItems.map(item => item.category)))
+
+  const handleLinkClick = () => {
+    // Close sidebar on mobile when a link is clicked
+    if (window.innerWidth <= 768) {
+      onClose()
+    }
+  }
+
+  return (
+    <>
+      {/* Hamburger/Close Toggle Button */}
+      <button 
+        className={`hamburger-button ${isOpen ? 'open' : ''}`}
+        onClick={onToggle}
+        aria-label={isOpen ? 'Close sidebar' : 'Open sidebar'}
+      >
+        <svg 
+          width="24" 
+          height="24" 
+          viewBox="0 0 24 24" 
+          fill="none" 
+          xmlns="http://www.w3.org/2000/svg"
+          className="hamburger-svg"
+        >
+          <path 
+            d="M3 6H21" 
+            stroke="white" 
+            strokeWidth="2" 
+            strokeLinecap="round" 
+            className="hamburger-line line-1"
+          />
+          <path 
+            d="M3 12H21" 
+            stroke="white" 
+            strokeWidth="2" 
+            strokeLinecap="round" 
+            className="hamburger-line line-2"
+          />
+          <path 
+            d="M3 18H21" 
+            stroke="white" 
+            strokeWidth="2" 
+            strokeLinecap="round" 
+            className="hamburger-line line-3"
+          />
+        </svg>
+      </button>
+
+      {/* Sidebar Overlay */}
+      {isOpen && <div className="sidebar-overlay" onClick={onClose}></div>}
+
+      <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
+        <div className="sidebar-header">
+          <div className="sidebar-header-content">
+            <h1 className="sidebar-title">React Mastery</h1>
+            <p className="sidebar-subtitle">Learning Platform</p>
+          </div>
+        </div>
+        
+        <nav className="sidebar-nav">
+          {categories.map(category => (
+            <div key={category} className="nav-category">
+              <h3 className="category-title">{category}</h3>
+              <ul className="nav-list">
+                {navigationItems
+                  .filter(item => item.category === category)
+                  .map(item => (
+                    <li key={item.path} className="nav-item">
+                      <Link 
+                        to={item.path}
+                        className={`nav-link ${location.pathname === item.path ? 'active' : ''}`}
+                        onClick={handleLinkClick}
+                      >
+                        <span className="nav-icon">{item.icon}</span>
+                        <span className="nav-text">{item.title}</span>
+                      </Link>
+                    </li>
+                  ))
+                }
+              </ul>
+            </div>
+          ))}
+        </nav>
+      </aside>
+    </>
+  )
+}
+
+export default Sidebar
