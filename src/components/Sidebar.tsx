@@ -132,62 +132,56 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, onToggle }) => {
             </div>
           ))}
 
-          {/* Authentication Section */}
-          <div className="nav-category">
-            <h3 className="category-title">Account</h3>
-            <ul className="nav-list">
-              {isAuthenticated ? (
-                <>
-                  <li className="nav-item">
-                    <div className="nav-link" style={{ cursor: 'default', opacity: 0.8 }}>
-                      <span className="nav-icon">👤</span>
-                      <span className="nav-text">{user?.username}</span>
-                    </div>
-                  </li>
-                  <li className="nav-item">
-                    <button 
-                      onClick={handleLogout}
-                      className="nav-link"
-                      style={{ 
-                        background: 'none', 
-                        border: 'none', 
-                        width: '100%', 
-                        textAlign: 'left',
-                        cursor: 'pointer'
-                      }}
-                    >
-                      <span className="nav-icon"><LogOut size={18} /></span>
-                      <span className="nav-text">Logout</span>
-                    </button>
-                  </li>
-                </>
-              ) : (
-                <>
-                  <li className="nav-item">
-                    <Link 
-                      to="/login"
-                      className={`nav-link ${location.pathname === '/login' ? 'active' : ''}`}
-                      onClick={handleLinkClick}
-                    >
-                      <span className="nav-icon"><LogIn size={18} /></span>
-                      <span className="nav-text">Login</span>
-                    </Link>
-                  </li>
-                  <li className="nav-item">
-                    <Link 
-                      to="/register"
-                      className={`nav-link ${location.pathname === '/register' ? 'active' : ''}`}
-                      onClick={handleLinkClick}
-                    >
-                      <span className="nav-icon"><UserPlus size={18} /></span>
-                      <span className="nav-text">Register</span>
-                    </Link>
-                  </li>
-                </>
-              )}
-            </ul>
-          </div>
+          {/* Authentication Section - Login/Register only */}
+          {!isAuthenticated && (
+            <div className="nav-category">
+              <h3 className="category-title">Account</h3>
+              <ul className="nav-list">
+                <li className="nav-item">
+                  <Link 
+                    to="/login"
+                    className={`nav-link ${location.pathname === '/login' ? 'active' : ''}`}
+                    onClick={handleLinkClick}
+                  >
+                    <span className="nav-icon"><LogIn size={18} /></span>
+                    <span className="nav-text">Login</span>
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link 
+                    to="/register"
+                    className={`nav-link ${location.pathname === '/register' ? 'active' : ''}`}
+                    onClick={handleLinkClick}
+                  >
+                    <span className="nav-icon"><UserPlus size={18} /></span>
+                    <span className="nav-text">Register</span>
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          )}
         </nav>
+
+        {/* User Profile at Bottom - Only when authenticated */}
+        {isAuthenticated && user && (
+          <div className="sidebar-user-profile">
+            <div className="user-avatar">
+              {user.username.charAt(0).toUpperCase()}
+            </div>
+            <div className="user-info">
+              <div className="user-name">{user.username}</div>
+              <div className="user-email">{user.email}</div>
+            </div>
+            <button 
+              onClick={handleLogout}
+              className="logout-button"
+              title="Logout"
+              aria-label="Logout"
+            >
+              <LogOut size={18} />
+            </button>
+          </div>
+        )}
       </aside>
     </>
   )
