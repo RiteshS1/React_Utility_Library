@@ -56,6 +56,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   return <SocketContext.Provider value={value}>{children}</SocketContext.Provider>;
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useSocket = () => {
   const context = useContext(SocketContext);
   if (context === undefined) {
