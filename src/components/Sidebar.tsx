@@ -1,6 +1,8 @@
 import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Home, Code, Component, MousePointer, GitBranch, List, Hash, Eye, Globe, Repeat, Zap, Bookmark, Target, Cpu } from 'lucide-react'
+import { Home, Code, Component, MousePointer, GitBranch, List, Hash, Eye, Globe, Repeat, Zap, Bookmark, Target, Cpu, LogIn, UserPlus, LogOut } from 'lucide-react'
+import { useAuth } from '../context/AuthContext'
+import OnlineUsers from './OnlineUsers'
 import './Sidebar.css'
 
 interface NavigationItem {
@@ -36,6 +38,7 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, onToggle }) => {
   const location = useLocation()
+  const { user, isAuthenticated, logout } = useAuth()
   
   const categories = Array.from(new Set(navigationItems.map(item => item.category)))
 
@@ -44,6 +47,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, onToggle }) => {
     if (window.innerWidth <= 768) {
       onClose()
     }
+  }
+
+  const handleLogout = () => {
+    logout()
+    handleLinkClick()
   }
 
   return (
@@ -95,6 +103,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, onToggle }) => {
             <h1 className="sidebar-title">React Mastery</h1>
             <p className="sidebar-subtitle">Learning Platform</p>
           </div>
+          <div style={{ marginTop: '1rem' }}>
+            <OnlineUsers />
+          </div>
         </div>
         
         <nav className="sidebar-nav">
@@ -120,6 +131,62 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, onToggle }) => {
               </ul>
             </div>
           ))}
+
+          {/* Authentication Section */}
+          <div className="nav-category">
+            <h3 className="category-title">Account</h3>
+            <ul className="nav-list">
+              {isAuthenticated ? (
+                <>
+                  <li className="nav-item">
+                    <div className="nav-link" style={{ cursor: 'default', opacity: 0.8 }}>
+                      <span className="nav-icon">👤</span>
+                      <span className="nav-text">{user?.username}</span>
+                    </div>
+                  </li>
+                  <li className="nav-item">
+                    <button 
+                      onClick={handleLogout}
+                      className="nav-link"
+                      style={{ 
+                        background: 'none', 
+                        border: 'none', 
+                        width: '100%', 
+                        textAlign: 'left',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      <span className="nav-icon"><LogOut size={18} /></span>
+                      <span className="nav-text">Logout</span>
+                    </button>
+                  </li>
+                </>
+              ) : (
+                <>
+                  <li className="nav-item">
+                    <Link 
+                      to="/login"
+                      className={`nav-link ${location.pathname === '/login' ? 'active' : ''}`}
+                      onClick={handleLinkClick}
+                    >
+                      <span className="nav-icon"><LogIn size={18} /></span>
+                      <span className="nav-text">Login</span>
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link 
+                      to="/register"
+                      className={`nav-link ${location.pathname === '/register' ? 'active' : ''}`}
+                      onClick={handleLinkClick}
+                    >
+                      <span className="nav-icon"><UserPlus size={18} /></span>
+                      <span className="nav-text">Register</span>
+                    </Link>
+                  </li>
+                </>
+              )}
+            </ul>
+          </div>
         </nav>
       </aside>
     </>
