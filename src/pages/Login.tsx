@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { AUTH_CONSTANTS } from '../constants/auth';
 import { LogIn } from 'lucide-react';
 
 const Login: React.FC = () => {
@@ -95,7 +96,7 @@ const Login: React.FC = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              minLength={6}
+              minLength={AUTH_CONSTANTS.MIN_PASSWORD_LENGTH}
               style={{
                 width: '100%',
                 padding: '0.75rem',

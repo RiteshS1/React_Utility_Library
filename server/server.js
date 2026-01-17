@@ -3,6 +3,7 @@ import { createServer } from 'http';
 import { Server } from 'socket.io';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import jwt from 'jsonwebtoken';
 import authRoutes from './routes/auth.js';
 import { connectDB } from './config/db.js';
 import { authenticateToken } from './middleware/auth.js';
@@ -19,6 +20,7 @@ const io = new Server(httpServer, {
 });
 
 const PORT = process.env.PORT || 3001;
+const isDevelopment = process.env.NODE_ENV !== 'production';
 
 // Middleware
 app.use(cors({
@@ -43,7 +45,9 @@ let onlineUsers = new Set();
 
 // Socket.IO connection handling
 io.on('connection', (socket) => {
-  console.log('User connected:', socket.id);
+  if (isDevelopment) {
+    console.log('User connected:', socket.id);
+  }
   
   // Add user to online users
   onlineUsers.add(socket.id);
@@ -54,16 +58,23 @@ io.on('connection', (socket) => {
   // Handle user authentication with JWT
   socket.on('authenticate', (token) => {
     try {
-      // Here you could verify the token and associate the socket with a user
-      console.log('User authenticated:', socket.id);
+      const secret = process.env.JWT_SECRET;
+      if (secret && token) {
+        jwt.verify(token, secret);
+        if (isDevelopment) {
+          console.log('User authenticated via Socket.IO');
+        }
+      }
     } catch (error) {
-      console.error('Authentication error:', error);
+      console.error('Socket authentication error:', error.message);
     }
   });
 
   // Handle disconnect
   socket.on('disconnect', () => {
-    console.log('User disconnected:', socket.id);
+    if (isDevelopment) {
+      console.log('User disconnected:', socket.id);
+    }
     onlineUsers.delete(socket.id);
     
     // Broadcast updated user count to all clients

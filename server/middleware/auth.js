@@ -9,7 +9,11 @@ export const authenticateToken = (req, res, next) => {
   }
 
   try {
-    const verified = jwt.verify(token, process.env.JWT_SECRET || 'default-secret');
+    const secret = process.env.JWT_SECRET;
+    if (!secret) {
+      throw new Error('JWT_SECRET not configured');
+    }
+    const verified = jwt.verify(token, secret);
     req.user = verified;
     next();
   } catch (error) {

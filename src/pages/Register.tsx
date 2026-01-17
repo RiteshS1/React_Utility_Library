@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { AUTH_CONSTANTS } from '../constants/auth';
 import { UserPlus } from 'lucide-react';
 
 const Register: React.FC = () => {
@@ -22,8 +23,8 @@ const Register: React.FC = () => {
       return;
     }
 
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters');
+    if (password.length < AUTH_CONSTANTS.MIN_PASSWORD_LENGTH) {
+      setError(`Password must be at least ${AUTH_CONSTANTS.MIN_PASSWORD_LENGTH} characters`);
       return;
     }
 
@@ -86,7 +87,7 @@ const Register: React.FC = () => {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
-              minLength={3}
+              minLength={AUTH_CONSTANTS.MIN_USERNAME_LENGTH}
               style={{
                 width: '100%',
                 padding: '0.75rem',
@@ -131,7 +132,7 @@ const Register: React.FC = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              minLength={6}
+              minLength={AUTH_CONSTANTS.MIN_PASSWORD_LENGTH}
               style={{
                 width: '100%',
                 padding: '0.75rem',
@@ -154,7 +155,7 @@ const Register: React.FC = () => {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
-              minLength={6}
+              minLength={AUTH_CONSTANTS.MIN_PASSWORD_LENGTH}
               style={{
                 width: '100%',
                 padding: '0.75rem',

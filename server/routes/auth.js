@@ -11,7 +11,11 @@ const router = express.Router();
 let inMemoryUsers = [];
 let userIdCounter = 1;
 
-const JWT_SECRET = process.env.JWT_SECRET || 'default-secret';
+const JWT_SECRET = process.env.JWT_SECRET;
+
+if (!JWT_SECRET && process.env.NODE_ENV === 'production') {
+  throw new Error('JWT_SECRET must be set in production environment');
+}
 
 // Helper function to check if MongoDB is connected
 const isMongoConnected = () => {
