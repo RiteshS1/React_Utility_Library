@@ -1,57 +1,131 @@
-# Quick Setup Guide
+# Quick Setup Guide - AWS Cognito Authentication
 
-This guide will help you get the React Mastery Learning Platform running on your machine in just a few minutes.
+This guide will help you get the React Mastery Learning Platform running with AWS Cognito authentication in just a few steps.
 
 ## Prerequisites
-
-Before you begin, ensure you have the following installed:
 
 - **Node.js** (v18 or higher) - [Download here](https://nodejs.org/)
 - **npm** (comes with Node.js)
 - **Git** - [Download here](https://git-scm.com/)
+- **AWS Account** - [Sign up here](https://aws.amazon.com/) (free tier available)
 
-MongoDB is optional - the server will work with in-memory storage without it.
+## Part 1: AWS Cognito Setup (One-Time, ~10 minutes)
 
-## Step-by-Step Setup
+### Step 1: Create Cognito User Pool
 
-### 1. Clone the Repository
+1. Go to [AWS Cognito Console](https://console.aws.amazon.com/cognito/)
+2. Click **"Create user pool"**
+3. **Configure sign-in experience:**
+   - Provider types: **Cognito user pool**
+   - Cognito user pool sign-in options: Check **Email**
+   - Click **Next**
+
+4. **Configure security requirements:**
+   - Password policy: **Cognito defaults** (or customize)
+   - Multi-factor authentication: **No MFA** (for development)
+   - Click **Next**
+
+5. **Configure sign-up experience:**
+   - Self-registration: **Enable self-registration**
+   - Attribute verification: **Send email message, verify email address**
+   - Required attributes: **email** (pre-selected)
+   - Click **Next**
+
+6. **Configure message delivery:**
+   - Email provider: **Send email with Cognito** (free, 50 emails/day)
+   - Click **Next**
+
+7. **Integrate your app:**
+   - User pool name: **react-mastery-pool** (or your preferred name)
+   - App client name: **react-mastery-client**
+   - **IMPORTANT**: DO NOT select "Generate a client secret"
+   - Click **Next**
+
+8. **Review and create:**
+   - Review all settings
+   - Click **Create user pool**
+
+### Step 2: Get Your Configuration Values
+
+After creating the user pool:
+
+1. **User Pool ID**: 
+   - On the User Pool page, look for "User pool ID"
+   - Copy this value (e.g., `us-east-1_AbCdEfGhI`)
+
+2. **App Client ID**:
+   - Go to "App integration" tab
+   - Under "App clients and analytics", click on your app client
+   - Copy the "Client ID" (e.g., `1a2b3c4d5e6f7g8h9i0j`)
+
+3. **AWS Region**:
+   - Note your region from the User Pool ID (e.g., `us-east-1`)
+
+### Step 3: Configure Authentication Flows (Important!)
+
+1. In your User Pool, go to "App integration" tab
+2. Click on your app client name
+3. Scroll to "Authentication flows"
+4. **Enable these flows:**
+   - ✅ ALLOW_USER_PASSWORD_AUTH
+   - ✅ ALLOW_REFRESH_TOKEN_AUTH
+   - ✅ ALLOW_USER_SRP_AUTH (enabled by default)
+5. Click **Save changes**
+
+## Part 2: Application Setup
+
+### Step 1: Clone and Install
 
 ```bash
+# Clone repository
 git clone https://github.com/RiteshS1/React_Utility_Library.git
 cd React_Utility_Library
-```
 
-### 2. Install Frontend Dependencies
-
-```bash
+# Install frontend dependencies
 npm install
-```
 
-This will install all required packages for the React frontend.
-
-### 3. Install Backend Dependencies
-
-```bash
+# Install backend dependencies
 cd server
 npm install
 cd ..
 ```
 
-This will install all required packages for the Express backend.
-
-### 4. Configure the Backend
+### Step 2: Configure Frontend
 
 ```bash
+# Create frontend environment file
+cp .env.example .env
+```
+
+Edit `.env` with your Cognito values:
+```env
+VITE_COGNITO_USER_POOL_ID=us-east-1_AbCdEfGhI
+VITE_COGNITO_CLIENT_ID=1a2b3c4d5e6f7g8h9i0j
+VITE_AWS_REGION=us-east-1
+VITE_API_URL=http://localhost:3001
+```
+
+### Step 3: Configure Backend
+
+```bash
+# Create backend environment file
 cd server
 cp .env.example .env
 ```
 
-The default `.env` file will work immediately with in-memory storage. You can edit it later to add MongoDB if needed.
+Edit `server/.env` with your Cognito values:
+```env
+PORT=3001
+NODE_ENV=development
+AWS_REGION=us-east-1
+COGNITO_USER_POOL_ID=us-east-1_AbCdEfGhI
+COGNITO_CLIENT_ID=1a2b3c4d5e6f7g8h9i0j
+CLIENT_URL=http://localhost:5173
+```
 
-### 5. Start the Backend Server
+### Step 4: Start the Application
 
-Open a new terminal window and run:
-
+**Terminal 1 - Start Backend:**
 ```bash
 cd server
 npm start
@@ -61,48 +135,58 @@ You should see:
 ```
 Server running on port 3001
 Client URL: http://localhost:5173
-MongoDB URI not provided. Using in-memory storage for users.
+Authentication: AWS Cognito
 ```
 
-Keep this terminal open!
-
-### 6. Start the Frontend Application
-
-Open another terminal window and run:
-
+**Terminal 2 - Start Frontend:**
 ```bash
 npm run dev
 ```
 
 You should see:
 ```
-  VITE v7.x.x  ready in xxx ms
-
-  ➜  Local:   http://localhost:5173/
-  ➜  Network: use --host to expose
+VITE v7.x.x ready in xxx ms
+➜  Local:   http://localhost:5173/
 ```
 
-### 7. Open in Browser
+### Step 5: Open and Test
 
-Navigate to: **http://localhost:5173**
+1. Navigate to: **http://localhost:5173**
+2. Click **"Register"** in the sidebar
+3. Create a test account with:
+   - Username: `testuser`
+   - Email: Your email (you'll receive a verification code)
+   - Password: At least 8 characters with uppercase, lowercase, and numbers
+4. Check your email for the verification code (if email verification is enabled)
+5. Try logging in
 
 ## Testing the Features
 
 ### Test Authentication
 
-1. Click on **Register** in the sidebar
-2. Create a new account with:
-   - Username: `testuser`
-   - Email: `test@example.com`
-   - Password: `password123`
-3. You'll be automatically logged in
-4. Your username will appear in the sidebar
-5. Try logging out and logging back in
+1. **Register a new account**
+   - Click "Register" in sidebar
+   - Fill in the form
+   - Submit and check your email for verification (if enabled)
+
+2. **Login**
+   - Click "Login" in sidebar
+   - Enter your credentials
+   - You'll be automatically logged in
+
+3. **Check session**
+   - Close the browser tab
+   - Reopen http://localhost:5173
+   - You should still be logged in (Amplify handles this)
+
+4. **Logout**
+   - Click your username in sidebar
+   - Click "Logout"
 
 ### Test Real-Time User Tracking
 
-1. Open the application in multiple browser windows or tabs
-2. Watch the "users online" counter in the sidebar and footer
+1. Open the application in multiple browser windows/tabs
+2. Watch the "users online" counter in sidebar and footer
 3. It should increase with each new window/tab
 4. Close a window/tab and watch the counter decrease
 
@@ -122,74 +206,68 @@ Navigate to: **http://localhost:5173**
 
 ## Troubleshooting
 
-### Port Already in Use
+### "User is not confirmed" Error
 
-If port 3001 is already in use:
+**Option 1: Disable Email Verification (Development Only)**
+1. Go to Cognito User Pool
+2. Sign-up experience → Edit
+3. Attribute verification → Set to "No verification"
+4. Save changes
+5. Try registering again
 
-1. Edit `server/.env`
-2. Change `PORT=3001` to another port (e.g., `PORT=3002`)
-3. Update `src/context/AuthContext.tsx` and `src/context/SocketContext.tsx` to use the new port
+**Option 2: Manually Confirm User**
+1. Go to Cognito User Pool → Users
+2. Find your user
+3. Actions → Confirm account
 
-### Backend Not Starting
+### "Invalid authentication" Errors
 
-- Ensure Node.js is installed: `node --version`
-- Check that you ran `npm install` in the server directory
-- Look for error messages in the terminal
+Check these common issues:
+- ✅ User Pool ID matches in both `.env` files
+- ✅ Client ID matches in both `.env` files  
+- ✅ AWS Region is correct
+- ✅ No extra spaces in `.env` values
+- ✅ Authentication flows are enabled in Cognito
 
-### Frontend Not Starting
+### Backend Won't Start
 
-- Ensure Node.js is installed: `node --version`
-- Check that you ran `npm install` in the root directory
-- Verify the backend is running on port 3001
+- Ensure all environment variables are set
+- Check that port 3001 is not in use: `lsof -i :3001`
+- Verify `aws-jwt-verify` is installed: `cd server && npm list aws-jwt-verify`
 
-### Real-Time Updates Not Working
+### Frontend Login Not Working
 
-- Ensure both frontend and backend are running
-- Check browser console for WebSocket connection errors
-- Verify CORS settings in `server/.env` match your frontend URL
+- Open browser DevTools → Console
+- Look for Amplify configuration errors
+- Verify Cognito configuration in `.env`
+- Check that backend is running
+
+### Email Not Received
+
+- Check spam/junk folder
+- Verify email in Cognito is correct
+- Free tier has 50 emails/day limit
+- Consider disabling email verification for development
 
 ## Next Steps
 
-### Add MongoDB (Optional)
+### Customize Cognito Settings
 
-For persistent storage:
+1. **Password Policy**: Cognito → Security → Password requirements
+2. **MFA**: Cognito → Security → Multi-factor authentication
+3. **Email Templates**: Cognito → Messaging → Email templates
+4. **Custom Domain**: Cognito → App integration → Domain
 
-1. Install MongoDB locally or create a free MongoDB Atlas account
-2. Edit `server/.env`:
-   ```env
-   MONGODB_URI=mongodb://localhost:27017/react-mastery
-   ```
-3. Restart the backend server
+### Add More Features
+
+- Social sign-in (Google, Facebook, etc.)
+- Custom attributes (profile picture, bio, etc.)
+- Email templates customization
+- Advanced security rules
 
 ### Deploy to Production
 
 See the main [README.md](README.md) for deployment instructions.
-
-## Features Overview
-
-✅ **Authentication System**
-- User registration with validation
-- Secure login with JWT tokens
-- Persistent sessions
-- Logout functionality
-
-✅ **Real-Time Features**
-- Live user count
-- WebSocket connection status
-- Automatic reconnection
-
-✅ **Learning Platform**
-- Interactive React tutorials
-- Code examples with syntax highlighting
-- Copy-to-clipboard functionality
-
-## Support
-
-If you encounter any issues:
-
-1. Check the [README.md](README.md) for detailed documentation
-2. Review the [Backend API Documentation](server/README.md)
-3. Open an issue on GitHub
 
 ## Quick Reference
 
@@ -204,14 +282,36 @@ npm start
 npm run dev
 ```
 
-### Build Frontend
+### Check Logs
+- Backend: Terminal output
+- Frontend: Browser DevTools → Console
+- Cognito: AWS Console → CloudWatch Logs
+
+### Useful Cognito CLI Commands
 ```bash
-npm run build
+# List users in pool
+aws cognito-idp list-users --user-pool-id us-east-1_AbCdEfGhI
+
+# Confirm a user manually
+aws cognito-idp admin-confirm-sign-up \
+  --user-pool-id us-east-1_AbCdEfGhI \
+  --username user@example.com
 ```
 
-### Run Tests
-```bash
-npm run lint
-```
+## Support
+
+- **AWS Cognito Docs**: https://docs.aws.amazon.com/cognito/
+- **AWS Amplify Docs**: https://docs.amplify.aws/
+- **Project README**: [README.md](README.md)
+- **GitHub Issues**: https://github.com/RiteshS1/React_Utility_Library/issues
+
+## Cost Information
+
+**AWS Cognito Free Tier:**
+- 50,000 Monthly Active Users (MAUs) - FREE
+- After that: $0.0055 per MAU
+
+**For this project in development:**
+- Cost: $0 (well within free tier)
 
 Happy learning! 🚀
