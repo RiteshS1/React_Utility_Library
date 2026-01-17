@@ -1,4 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
+import { signIn, signUp, signOut, getCurrentUser, fetchAuthSession } from 'aws-amplify/auth';
 
 interface User {
   id: string;
@@ -18,89 +19,83 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const API_URL = 'http://localhost:3001/api';
-
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check for stored token on mount
-    const storedToken = localStorage.getItem('token');
-    const storedUser = localStorage.getItem('user');
-
-    if (storedToken && storedUser) {
-      try {
-        setToken(storedToken);
-        setUser(JSON.parse(storedUser));
-      } catch (error) {
-        // Clear invalid data from localStorage
-        console.error('Failed to parse stored user data:', error);
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-      }
-    }
-    setLoading(false);
+    // Check for current authenticated user on mount
+    checkUser();
   }, []);
+
+  const checkUser = async () => {
+    try {
+      const currentUser = await getCurrentUser();
+      const session = await fetchAuthSession();
+      
+      if (currentUser && session.tokens?.accessToken) {
+        setUser({
+          id: currentUser.userId,
+          username: currentUser.username || '',
+          email: currentUser.signInDetails?.loginId || '',
+        });
+        setToken(session.tokens.accessToken.toString());
+      }
+    } catch {
+      // User is not authenticated
+      console.log('No authenticated user');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const login = async (email: string, password: string) => {
     try {
-      const response = await fetch(`${API_URL}/auth/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Login failed');
+      const { isSignedIn } = await signIn({ username: email, password });
+      
+      if (isSignedIn) {
+        await checkUser();
       }
-
-      setToken(data.token);
-      setUser(data.user);
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
-    } catch (error) {
-      console.error('Login error:', error);
-      throw error;
+    } catch (error: unknown) {
+      const err = error as Error;
+      console.error('Login error:', err);
+      throw new Error(err.message || 'Failed to login');
     }
   };
 
   const register = async (username: string, email: string, password: string) => {
     try {
-      const response = await fetch(`${API_URL}/auth/register`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const { isSignUpComplete } = await signUp({
+        username: email,
+        password,
+        options: {
+          userAttributes: {
+            email,
+            preferred_username: username,
+          },
         },
-        body: JSON.stringify({ username, email, password }),
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Registration failed');
+      if (isSignUpComplete) {
+        // Auto-login after successful registration
+        await login(email, password);
       }
-
-      setToken(data.token);
-      setUser(data.user);
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
-    } catch (error) {
-      console.error('Registration error:', error);
-      throw error;
+    } catch (error: unknown) {
+      const err = error as Error;
+      console.error('Registration error:', err);
+      throw new Error(err.message || 'Failed to register');
     }
   };
 
-  const logout = () => {
-    setUser(null);
-    setToken(null);
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+  const logout = async () => {
+    try {
+      await signOut();
+      setUser(null);
+      setToken(null);
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
   };
 
   const value = {

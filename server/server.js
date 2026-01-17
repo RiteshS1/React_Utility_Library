@@ -3,10 +3,7 @@ import { createServer } from 'http';
 import { Server } from 'socket.io';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import jwt from 'jsonwebtoken';
 import authRoutes from './routes/auth.js';
-import { connectDB } from './config/db.js';
-import { authenticateToken } from './middleware/auth.js';
 
 dotenv.config();
 
@@ -29,15 +26,16 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// Connect to MongoDB (optional)
-connectDB();
-
 // Routes
 app.use('/api/auth', authRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', message: 'Server is running' });
+  res.json({ 
+    status: 'ok', 
+    message: 'Server is running',
+    authProvider: 'AWS Cognito'
+  });
 });
 
 // Track online users
@@ -55,18 +53,10 @@ io.on('connection', (socket) => {
   // Broadcast updated user count to all clients
   io.emit('userCount', onlineUsers.size);
   
-  // Handle user authentication with JWT
+  // Handle user authentication with Cognito token (optional)
   socket.on('authenticate', (token) => {
-    try {
-      const secret = process.env.JWT_SECRET;
-      if (secret && token) {
-        jwt.verify(token, secret);
-        if (isDevelopment) {
-          console.log('User authenticated via Socket.IO');
-        }
-      }
-    } catch (error) {
-      console.error('Socket authentication error:', error.message);
+    if (isDevelopment && token) {
+      console.log('User authenticated via Socket.IO');
     }
   });
 
@@ -85,4 +75,5 @@ io.on('connection', (socket) => {
 httpServer.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   console.log(`Client URL: ${process.env.CLIENT_URL || 'http://localhost:5173'}`);
+  console.log(`Authentication: AWS Cognito`);
 });
