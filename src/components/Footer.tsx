@@ -1,11 +1,15 @@
 import React from 'react'
+import OnlineUsers from './OnlineUsers'
 import './Footer.css'
 
 const Footer: React.FC = () => {
   return (
     <footer className="footer" role="contentinfo">
       <div className="footer-content">
-        <p>Built with ❤️ by Ritesh Sharma</p>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+          <p>Built with ❤️ by Ritesh Sharma</p>
+          <OnlineUsers />
+        </div>
         <div className="social-links">
           <a href="https://github.com/RiteshS1" target="_blank" rel="noopener noreferrer" aria-label="Visit GitHub Profile">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">

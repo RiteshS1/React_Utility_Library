@@ -1,6 +1,8 @@
 import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Home, Code, Component, MousePointer, GitBranch, List, Hash, Eye, Globe, Repeat, Zap, Bookmark, Target, Cpu } from 'lucide-react'
+import { Home, Code, Component, MousePointer, GitBranch, List, Hash, Eye, Globe, Repeat, Zap, Bookmark, Target, Cpu, LogIn, UserPlus, LogOut } from 'lucide-react'
+import { useAuth } from '../context/AuthContext'
+import OnlineUsers from './OnlineUsers'
 import './Sidebar.css'
 
 interface NavigationItem {
@@ -36,6 +38,7 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, onToggle }) => {
   const location = useLocation()
+  const { user, isAuthenticated, logout } = useAuth()
   
   const categories = Array.from(new Set(navigationItems.map(item => item.category)))
 
@@ -44,6 +47,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, onToggle }) => {
     if (window.innerWidth <= 768) {
       onClose()
     }
+  }
+
+  const handleLogout = () => {
+    logout()
+    handleLinkClick()
   }
 
   return (
@@ -95,6 +103,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, onToggle }) => {
             <h1 className="sidebar-title">React Mastery</h1>
             <p className="sidebar-subtitle">Learning Platform</p>
           </div>
+          <div style={{ marginTop: '1rem' }}>
+            <OnlineUsers />
+          </div>
         </div>
         
         <nav className="sidebar-nav">
@@ -120,7 +131,57 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, onToggle }) => {
               </ul>
             </div>
           ))}
+
+          {/* Authentication Section - Login/Register only */}
+          {!isAuthenticated && (
+            <div className="nav-category">
+              <h3 className="category-title">Account</h3>
+              <ul className="nav-list">
+                <li className="nav-item">
+                  <Link 
+                    to="/login"
+                    className={`nav-link ${location.pathname === '/login' ? 'active' : ''}`}
+                    onClick={handleLinkClick}
+                  >
+                    <span className="nav-icon"><LogIn size={18} /></span>
+                    <span className="nav-text">Login</span>
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link 
+                    to="/register"
+                    className={`nav-link ${location.pathname === '/register' ? 'active' : ''}`}
+                    onClick={handleLinkClick}
+                  >
+                    <span className="nav-icon"><UserPlus size={18} /></span>
+                    <span className="nav-text">Register</span>
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          )}
         </nav>
+
+        {/* User Profile at Bottom - Only when authenticated */}
+        {isAuthenticated && user && (
+          <div className="sidebar-user-profile">
+            <div className="user-avatar">
+              {user.username.charAt(0).toUpperCase()}
+            </div>
+            <div className="user-info">
+              <div className="user-name">{user.username}</div>
+              <div className="user-email">{user.email}</div>
+            </div>
+            <button 
+              onClick={handleLogout}
+              className="logout-button"
+              title="Logout"
+              aria-label="Logout"
+            >
+              <LogOut size={18} />
+            </button>
+          </div>
+        )}
       </aside>
     </>
   )
