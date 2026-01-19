@@ -6,8 +6,8 @@ const Footer: React.FC = () => {
   return (
     <footer className="footer" role="contentinfo">
       <div className="footer-content">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-          <p>Built with ❤️ by Ritesh Sharma</p>
+        <p>Built with ❤️ by Ritesh Sharma</p>
+        <div className="footer-online-users">
           <OnlineUsers />
         </div>
         <div className="social-links">

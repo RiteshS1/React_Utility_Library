@@ -9,7 +9,7 @@ interface SocketContextType {
 
 const SocketContext = createContext<SocketContextType | undefined>(undefined);
 
-const SOCKET_URL = 'http://localhost:3001';
+const SOCKET_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
 export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [socket, setSocket] = useState<Socket | null>(null);
@@ -17,31 +17,33 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const [connected, setConnected] = useState(false);
 
   useEffect(() => {
-    // Create socket connection
     const newSocket = io(SOCKET_URL, {
       transports: ['websocket', 'polling'],
     });
 
     setSocket(newSocket);
 
-    // Connection event handlers
     newSocket.on('connect', () => {
-      console.log('Connected to Socket.IO server');
+      if (import.meta.env.DEV) {
+        console.log('Connected to Socket.IO server');
+      }
       setConnected(true);
     });
 
     newSocket.on('disconnect', () => {
-      console.log('Disconnected from Socket.IO server');
+      if (import.meta.env.DEV) {
+        console.log('Disconnected from Socket.IO server');
+      }
       setConnected(false);
     });
 
-    // Listen for user count updates
     newSocket.on('userCount', (count: number) => {
-      console.log('Online users:', count);
+      if (import.meta.env.DEV) {
+        console.log('Online users:', count);
+      }
       setOnlineUsers(count);
     });
 
-    // Cleanup on unmount
     return () => {
       newSocket.close();
     };

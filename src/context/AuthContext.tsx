@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import { signIn, signUp, signOut, getCurrentUser, fetchAuthSession } from 'aws-amplify/auth';
+import { signIn, signUp, signOut, getCurrentUser, fetchAuthSession, confirmSignUp, fetchUserAttributes } from 'aws-amplify/auth';
 
 interface User {
   id: string;
@@ -7,11 +7,17 @@ interface User {
   email: string;
 }
 
+interface RegisterResult {
+  needsVerification: boolean;
+  email?: string;
+}
+
 interface AuthContextType {
   user: User | null;
   token: string | null;
   login: (email: string, password: string) => Promise<void>;
-  register: (username: string, email: string, password: string) => Promise<void>;
+  register: (username: string, email: string, password: string) => Promise<RegisterResult>;
+  confirmSignUp: (email: string, code: string, password: string) => Promise<void>;
   logout: () => void;
   isAuthenticated: boolean;
   loading: boolean;
@@ -25,7 +31,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check for current authenticated user on mount
     checkUser();
   }, []);
 
@@ -34,17 +39,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const currentUser = await getCurrentUser();
       const session = await fetchAuthSession();
       
-      if (currentUser && session.tokens?.accessToken) {
+      if (currentUser && session.tokens?.idToken) {
+        const payload = session.tokens.idToken.payload as any;
+        
+        let preferredUsername = '';
+        try {
+          const userAttributes = await fetchUserAttributes();
+          preferredUsername = userAttributes.preferred_username || '';
+        } catch (attrError) {
+          if (import.meta.env.DEV) {
+            console.log('Could not fetch user attributes, using token claims');
+          }
+        }
+        
         setUser({
-          id: currentUser.userId,
-          username: currentUser.username || '',
-          email: currentUser.signInDetails?.loginId || '',
+          id: payload.sub,
+          username: preferredUsername || payload.preferred_username || payload['cognito:username'] || payload.email?.split('@')[0] || 'user',
+          email: payload.email || '',
         });
-        setToken(session.tokens.accessToken.toString());
+        setToken(session.tokens.idToken.toString());
       }
     } catch {
-      // User is not authenticated
-      console.log('No authenticated user');
+      if (import.meta.env.DEV) {
+        console.log('No authenticated user');
+      }
     } finally {
       setLoading(false);
     }
@@ -59,14 +77,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     } catch (error: unknown) {
       const err = error as Error;
-      console.error('Login error:', err);
+      if (import.meta.env.DEV) {
+        console.error('Login error:', err);
+      }
       throw new Error(err.message || 'Failed to login');
     }
   };
 
-  const register = async (username: string, email: string, password: string) => {
+  const register = async (username: string, email: string, password: string): Promise<RegisterResult> => {
     try {
-      const { isSignUpComplete } = await signUp({
+      const { isSignUpComplete, nextStep } = await signUp({
         username: email,
         password,
         options: {
@@ -78,13 +98,41 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
 
       if (isSignUpComplete) {
-        // Auto-login after successful registration
         await login(email, password);
+        return { needsVerification: false };
+      } else {
+        if (nextStep.signUpStep === 'CONFIRM_SIGN_UP') {
+          return { needsVerification: true, email };
+        }
+        throw new Error('Unexpected signup step');
       }
     } catch (error: unknown) {
       const err = error as Error;
-      console.error('Registration error:', err);
+      if (import.meta.env.DEV) {
+        console.error('Registration error:', err);
+      }
       throw new Error(err.message || 'Failed to register');
+    }
+  };
+
+  const confirmSignUpCode = async (email: string, code: string, password: string) => {
+    try {
+      const { isSignUpComplete } = await confirmSignUp({
+        username: email,
+        confirmationCode: code,
+      });
+
+      if (isSignUpComplete) {
+        await login(email, password);
+      } else {
+        throw new Error('Verification incomplete');
+      }
+    } catch (error: unknown) {
+      const err = error as Error;
+      if (import.meta.env.DEV) {
+        console.error('Verification error:', err);
+      }
+      throw new Error(err.message || 'Failed to verify email');
     }
   };
 
@@ -94,7 +142,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(null);
       setToken(null);
     } catch (error) {
-      console.error('Logout error:', error);
+      if (import.meta.env.DEV) {
+        console.error('Logout error:', error);
+      }
     }
   };
 
@@ -103,6 +153,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     token,
     login,
     register,
+    confirmSignUp: confirmSignUpCode,
     logout,
     isAuthenticated: !!user,
     loading,

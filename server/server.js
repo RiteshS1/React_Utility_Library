@@ -7,11 +7,32 @@ import authRoutes from './routes/auth.js';
 
 dotenv.config();
 
+if (!process.env.COGNITO_USER_POOL_ID || !process.env.COGNITO_CLIENT_ID) {
+  console.error('❌ ERROR: Missing required environment variables!');
+  console.error('Please check server/.env file contains:');
+  console.error('  - COGNITO_USER_POOL_ID');
+  console.error('  - COGNITO_CLIENT_ID');
+  process.exit(1);
+}
+
+const CLIENT_URL = process.env.CLIENT_URL;
+if (!CLIENT_URL) {
+  if (process.env.NODE_ENV === 'production') {
+    console.error('❌ ERROR: CLIENT_URL is required in production!');
+    console.error('Please set CLIENT_URL in server/.env file');
+    process.exit(1);
+  }
+  console.warn('⚠️  WARNING: CLIENT_URL not set, using localhost fallback (development only)');
+}
+
 const app = express();
 const httpServer = createServer(app);
+const defaultClientUrl = 'http://localhost:5173';
+const corsOrigin = CLIENT_URL || defaultClientUrl;
+
 const io = new Server(httpServer, {
   cors: {
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
+    origin: corsOrigin,
     methods: ['GET', 'POST']
   }
 });
@@ -19,17 +40,14 @@ const io = new Server(httpServer, {
 const PORT = process.env.PORT || 3001;
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
-// Middleware
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
+  origin: corsOrigin,
   credentials: true
 }));
 app.use(express.json());
 
-// Routes
 app.use('/api/auth', authRoutes);
 
-// Health check endpoint
 app.get('/api/health', (req, res) => {
   res.json({ 
     status: 'ok', 
@@ -38,42 +56,35 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Track online users
 let onlineUsers = new Set();
 
-// Socket.IO connection handling
 io.on('connection', (socket) => {
   if (isDevelopment) {
     console.log('User connected:', socket.id);
   }
   
-  // Add user to online users
   onlineUsers.add(socket.id);
-  
-  // Broadcast updated user count to all clients
   io.emit('userCount', onlineUsers.size);
   
-  // Handle user authentication with Cognito token (optional)
   socket.on('authenticate', (token) => {
     if (isDevelopment && token) {
       console.log('User authenticated via Socket.IO');
     }
   });
 
-  // Handle disconnect
   socket.on('disconnect', () => {
     if (isDevelopment) {
       console.log('User disconnected:', socket.id);
     }
     onlineUsers.delete(socket.id);
-    
-    // Broadcast updated user count to all clients
     io.emit('userCount', onlineUsers.size);
   });
 });
 
 httpServer.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`Client URL: ${process.env.CLIENT_URL || 'http://localhost:5173'}`);
-  console.log(`Authentication: AWS Cognito`);
+  if (isDevelopment) {
+    console.log(`Server running on port ${PORT}`);
+    console.log(`Client URL: ${corsOrigin}`);
+    console.log(`Authentication: AWS Cognito`);
+  }
 });

@@ -1,16 +1,25 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { AUTH_CONSTANTS } from '../constants/auth';
 import { LogIn } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { AUTH_CONSTANTS } from '../constants/auth';
+import { useAuth } from '../context/AuthContext';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state?.message) {
+      setSuccess(location.state.message);
+      window.history.replaceState({}, document.title);
+    }
+  }, [location]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,6 +58,19 @@ const Login: React.FC = () => {
             Sign in to access your React Mastery account
           </p>
         </div>
+
+        {success && (
+          <div style={{
+            padding: '1rem',
+            marginBottom: '1rem',
+            background: '#efe',
+            border: '1px solid #cfc',
+            borderRadius: '6px',
+            color: '#3c3'
+          }}>
+            {success}
+          </div>
+        )}
 
         {error && (
           <div style={{

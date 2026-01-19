@@ -57,10 +57,14 @@
   height: 20px;
 }
 
+.footer-online-users {
+  display: none;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .footer {
-    margin-left: 0; /* Remove left margin on mobile */
+    margin-left: 0;
   }
   
   .footer-content {
@@ -71,5 +75,9 @@
   
   .footer {
     padding: 1.5rem 0;
+  }
+  
+  .footer-online-users {
+    display: block;
   }
 }
