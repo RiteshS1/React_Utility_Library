@@ -28,6 +28,13 @@ import CriticalRenderingPath from './pages/CriticalRenderingPath'
 import ReactMountHydrate from './pages/ReactMountHydrate'
 import SyntheticEventSystem from './pages/SyntheticEventSystem'
 import MasterAssessment from './pages/MasterAssessment'
+import UseDebounceToolkit from './pages/toolkit/UseDebounceToolkit'
+import UseOnClickOutsideToolkit from './pages/toolkit/UseOnClickOutsideToolkit'
+import UseLocalStorageToolkit from './pages/toolkit/UseLocalStorageToolkit'
+import UseMediaQueryToolkit from './pages/toolkit/UseMediaQueryToolkit'
+import UseCopyToClipboardToolkit from './pages/toolkit/UseCopyToClipboardToolkit'
+import UseIntervalToolkit from './pages/toolkit/UseIntervalToolkit'
+import UseWindowSizeToolkit from './pages/toolkit/UseWindowSizeToolkit'
 import './App.css'
 
 const LEGACY_REDIRECTS = [
@@ -103,6 +110,13 @@ function App() {
                 <Route path="use-callback" element={<UseCallbackHook />} />
                 <Route path="use-ref" element={<UseRefHook />} />
                 <Route path="custom-hooks" element={<CustomHooks />} />
+                <Route path="toolkit/use-debounce" element={<UseDebounceToolkit />} />
+                <Route path="toolkit/use-onclick-outside" element={<UseOnClickOutsideToolkit />} />
+                <Route path="toolkit/use-local-storage" element={<UseLocalStorageToolkit />} />
+                <Route path="toolkit/use-media-query" element={<UseMediaQueryToolkit />} />
+                <Route path="toolkit/use-copy-to-clipboard" element={<UseCopyToClipboardToolkit />} />
+                <Route path="toolkit/use-interval" element={<UseIntervalToolkit />} />
+                <Route path="toolkit/use-window-size" element={<UseWindowSizeToolkit />} />
                 <Route path="master-assessment" element={<MasterAssessment />} />
               </Route>
 

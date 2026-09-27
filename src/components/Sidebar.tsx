@@ -21,6 +21,13 @@ import {
   MousePointerClick,
   Trophy,
   Check,
+  Timer,
+  Clipboard,
+  Monitor,
+  MousePointerBan,
+  HardDrive,
+  Smartphone,
+  Wrench,
 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { useProgress } from '../context/ProgressContext'
@@ -71,7 +78,14 @@ const navigationItems: NavigationItem[] = [
   { path: '/learn/use-memo', title: 'useMemo Hook', icon: <Zap size={18} />, category: 'React Hooks', moduleId: 'use-memo' },
   { path: '/learn/use-callback', title: 'useCallback Hook', icon: <Bookmark size={18} />, category: 'React Hooks', moduleId: 'use-callback' },
   { path: '/learn/use-ref', title: 'useRef Hook', icon: <Target size={18} />, category: 'React Hooks', moduleId: 'use-ref' },
-  { path: '/learn/custom-hooks', title: 'Custom Hooks', icon: <Cpu size={18} />, category: 'React Hooks', moduleId: 'custom-hooks' },
+  { path: '/learn/custom-hooks', title: 'Custom Hooks Intro', icon: <Cpu size={18} />, category: 'React Hooks', moduleId: 'custom-hooks' },
+  { path: '/learn/toolkit/use-debounce', title: 'useDebounce', icon: <Timer size={18} />, category: 'Custom Hooks Toolkit', moduleId: 'tk-debounce' },
+  { path: '/learn/toolkit/use-onclick-outside', title: 'useOnClickOutside', icon: <MousePointerBan size={18} />, category: 'Custom Hooks Toolkit', moduleId: 'tk-outside' },
+  { path: '/learn/toolkit/use-local-storage', title: 'useLocalStorage', icon: <HardDrive size={18} />, category: 'Custom Hooks Toolkit', moduleId: 'tk-storage' },
+  { path: '/learn/toolkit/use-media-query', title: 'useMediaQuery', icon: <Smartphone size={18} />, category: 'Custom Hooks Toolkit', moduleId: 'tk-media' },
+  { path: '/learn/toolkit/use-copy-to-clipboard', title: 'useCopyToClipboard', icon: <Clipboard size={18} />, category: 'Custom Hooks Toolkit', moduleId: 'tk-copy' },
+  { path: '/learn/toolkit/use-interval', title: 'useInterval', icon: <Wrench size={18} />, category: 'Custom Hooks Toolkit', moduleId: 'tk-interval' },
+  { path: '/learn/toolkit/use-window-size', title: 'useWindowSize', icon: <Monitor size={18} />, category: 'Custom Hooks Toolkit', moduleId: 'tk-window' },
   { path: '/learn/master-assessment', title: 'Master SDE-1 & SDE-2 Quiz', icon: <Trophy size={18} />, category: 'Assessment' },
 ]
 
@@ -80,6 +94,7 @@ const CATEGORIES = [
   'Browser & DOM Internals',
   'Fundamentals',
   'React Hooks',
+  'Custom Hooks Toolkit',
   'Assessment',
 ] as const
 
@@ -100,7 +115,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, onToggle }) => {
   }
 
   const handleLogout = async () => {
-    // Leave /learn first so ProtectedRoute cannot redirect with openAuth
     handleLinkClick()
     navigate('/', { replace: true })
     await logout()

@@ -1,0 +1,20 @@
+config:
+  target: "http://localhost:3001"
+  phases:
+    - duration: 30
+      arrivalRate: 10
+      name: "Sustained Connection Ramp-up"
+  engines:
+    socketio: {}
+  ensure:
+    maxErrorRate: 1
+
+scenarios:
+  - name: "Socket.IO concurrent hold"
+    engine: "socketio"
+    flow:
+      - emit:
+          channel: "authenticate"
+          data: "load-test-dummy-token"
+      # Hold the connection open to exercise concurrency / memory
+      - think: 15

@@ -63,6 +63,7 @@ const CodeBlock: React.FC<CodeBlockProps> = ({
             padding: '1.5rem',
             fontSize: '0.875rem',
             lineHeight: 1.5,
+            background: '#1a1a1a',
           }}
         >
           {code}

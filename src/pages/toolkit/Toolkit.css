@@ -1,0 +1,189 @@
+/* Shared styles for Custom Hooks Toolkit modules */
+.toolkit-benefit {
+  margin: 1rem 0 1.5rem;
+  padding: 1rem 1.15rem;
+  border-radius: 10px;
+  border: 1px solid #bfdbfe;
+  background: #eff6ff;
+  color: #1e3c97;
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+.toolkit-benefit strong {
+  color: #19357f;
+}
+
+.toolkit-playground {
+  padding: 1.25rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.toolkit-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-top: 1rem;
+}
+
+.toolkit-badge {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.65rem 0.9rem;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  min-width: 160px;
+}
+
+.toolkit-badge span {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #64748b;
+}
+
+.toolkit-badge strong {
+  font-size: 0.95rem;
+  color: #1a1a1a;
+  word-break: break-word;
+}
+
+.toolkit-badge.live strong {
+  color: #007acc;
+}
+
+.toolkit-badge.delayed strong {
+  color: #1e3c97;
+}
+
+.toolkit-input {
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #f8fafc;
+  color: #1a1a1a;
+  font-size: 0.95rem;
+  box-sizing: border-box;
+}
+
+.toolkit-input:focus {
+  outline: none;
+  border-color: #007acc;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(0, 122, 204, 0.12);
+}
+
+.toolkit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background: #1e3c97;
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.toolkit-btn:hover {
+  background: #19357f;
+  opacity: 1;
+}
+
+.toolkit-btn.ghost {
+  background: #fff;
+  border-color: #e2e8f0;
+  color: #334155;
+}
+
+.toolkit-hint {
+  margin-top: 0.85rem;
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+.toolkit-popover-wrap {
+  position: relative;
+  display: inline-block;
+}
+
+.toolkit-popover {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  left: 0;
+  z-index: 20;
+  min-width: 240px;
+  padding: 1rem;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.12);
+}
+
+.toolkit-theme-demo {
+  padding: 1.25rem;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  transition: background 0.2s, color 0.2s;
+}
+
+.toolkit-theme-demo.light {
+  background: #fff;
+  color: #1a1a1a;
+}
+
+.toolkit-theme-demo.dark {
+  background: #1a1a1a;
+  color: #f8fafc;
+  border-color: #334155;
+}
+
+.toolkit-media-card {
+  display: flex;
+  gap: 1rem;
+  padding: 1.25rem;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  transition: flex-direction 0.2s;
+}
+
+.toolkit-media-card.stacked {
+  flex-direction: column;
+}
+
+.toolkit-media-card.row {
+  flex-direction: row;
+  align-items: center;
+}
+
+.toolkit-media-swatch {
+  width: 72px;
+  height: 72px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #1e3c97, #007acc);
+  flex-shrink: 0;
+}
+
+.toolkit-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.25rem;
+  margin-top: 1rem;
+}
+
+.toolkit-mini-card {
+  padding: 1.15rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #fff;
+}

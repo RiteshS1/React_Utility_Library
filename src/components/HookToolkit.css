@@ -1,0 +1,166 @@
+.toolkit-page .toolkit-eyebrow {
+  display: inline-block;
+  margin: 0 0 0.5rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+  background: #eff6ff;
+  color: #1e3c97;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.toolkit-benefit {
+  border-left: 4px solid #1e3c97;
+}
+
+.toolkit-playground {
+  margin-top: 1.5rem;
+}
+
+.toolkit-demo {
+  margin-top: 1rem;
+  padding: 1.25rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #f8fafc;
+}
+
+.toolkit-demo label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 0.4rem;
+}
+
+.toolkit-demo input[type='text'],
+.toolkit-demo input[type='number'],
+.toolkit-demo textarea {
+  width: 100%;
+  max-width: 420px;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #fff;
+  color: #1a1a1a;
+  font-size: 0.9rem;
+  box-sizing: border-box;
+}
+
+.toolkit-demo input:focus,
+.toolkit-demo textarea:focus {
+  outline: none;
+  border-color: #007acc;
+  box-shadow: 0 0 0 3px rgba(0, 122, 204, 0.12);
+}
+
+.toolkit-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 0.85rem 0;
+  font-size: 0.875rem;
+  color: #475569;
+}
+
+.toolkit-meta strong {
+  color: #19357f;
+}
+
+.toolkit-panel {
+  margin-top: 0.85rem;
+  padding: 0.85rem 1rem;
+  border-radius: 8px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  color: #334155;
+  font-size: 0.9rem;
+}
+
+.toolkit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.75rem;
+  margin-right: 0.5rem;
+  padding: 0.55rem 1rem;
+  border: none;
+  border-radius: 8px;
+  background: #1e3c97;
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.toolkit-btn:hover {
+  background: #19357f;
+  opacity: 1;
+}
+
+.toolkit-btn.ghost {
+  background: #fff;
+  color: #1e3c97;
+  border: 1px solid #cbd5e1;
+}
+
+.toolkit-btn.ghost:hover {
+  background: #f8fafc;
+}
+
+.toolkit-badge {
+  display: inline-block;
+  padding: 0.3rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.toolkit-badge.on {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.toolkit-badge.off {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.toolkit-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.toolkit-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  min-width: 180px;
+  padding: 0.5rem;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.1);
+  z-index: 5;
+}
+
+.toolkit-dropdown-menu button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0.5rem 0.65rem;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #334155;
+  font-size: 0.875rem;
+}
+
+.toolkit-dropdown-menu button:hover {
+  background: #eff6ff;
+  color: #1e3c97;
+  opacity: 1;
+}

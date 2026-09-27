@@ -22,7 +22,14 @@ export const LEARNING_MODULES: LearningModule[] = [
   { id: 'use-memo', path: '/learn/use-memo', title: 'useMemo Hook', category: 'React Hooks' },
   { id: 'use-callback', path: '/learn/use-callback', title: 'useCallback Hook', category: 'React Hooks' },
   { id: 'use-ref', path: '/learn/use-ref', title: 'useRef Hook', category: 'React Hooks' },
-  { id: 'custom-hooks', path: '/learn/custom-hooks', title: 'Custom Hooks', category: 'Advanced' },
+  { id: 'custom-hooks', path: '/learn/custom-hooks', title: 'Custom Hooks Intro', category: 'React Hooks' },
+  { id: 'tk-debounce', path: '/learn/toolkit/use-debounce', title: 'useDebounce', category: 'Custom Hooks Toolkit' },
+  { id: 'tk-outside', path: '/learn/toolkit/use-onclick-outside', title: 'useOnClickOutside', category: 'Custom Hooks Toolkit' },
+  { id: 'tk-storage', path: '/learn/toolkit/use-local-storage', title: 'useLocalStorage', category: 'Custom Hooks Toolkit' },
+  { id: 'tk-media', path: '/learn/toolkit/use-media-query', title: 'useMediaQuery', category: 'Custom Hooks Toolkit' },
+  { id: 'tk-copy', path: '/learn/toolkit/use-copy-to-clipboard', title: 'useCopyToClipboard', category: 'Custom Hooks Toolkit' },
+  { id: 'tk-interval', path: '/learn/toolkit/use-interval', title: 'useInterval', category: 'Custom Hooks Toolkit' },
+  { id: 'tk-window', path: '/learn/toolkit/use-window-size', title: 'useWindowSize', category: 'Custom Hooks Toolkit' },
 ];
 
 /** Ordered lesson flow including the final assessment (for next/prev nav). */

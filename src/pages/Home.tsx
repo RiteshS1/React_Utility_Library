@@ -29,7 +29,7 @@ const Home: React.FC = () => {
   const quickLinks = [
     { path: '/learn/critical-rendering-path', title: 'Browser & DOM Internals', description: 'CRP, mount phases, synthetic events' },
     { path: '/learn/jsx-basics', title: 'Start with JSX Basics', description: 'Learn the syntax that powers React' },
-    { path: '/learn/use-state', title: 'Master useState', description: 'Manage component state effectively' },
+    { path: '/learn/toolkit/use-debounce', title: 'Custom Hooks Toolkit', description: 'Copy-paste production hooks' },
     { path: '/learn/master-assessment', title: 'SDE-1 / SDE-2 Quiz', description: '20 interview questions with deep reviews' },
   ]
 
@@ -40,6 +40,20 @@ const Home: React.FC = () => {
         <p className="page-description">
           Continue your path from browser internals through hooks mastery. Track progress
           in the sidebar, then finish with the Master SDE assessment.
+        </p>
+        <p
+          style={{
+            marginTop: '1rem',
+            padding: '0.85rem 1.1rem',
+            background: '#eff6ff',
+            border: '1px solid #bfdbfe',
+            borderRadius: '10px',
+            color: '#1e3c97',
+            fontWeight: 600,
+            fontSize: '0.95rem',
+          }}
+        >
+          Production-ready custom hooks to copy-paste into your daily workflow.
         </p>
       </div>
 
