@@ -1,20 +1,61 @@
 config:
-  target: "http://localhost:3001"
+  target: "http://localhost:3001" # Swap to your live Render backend for remote testing
   phases:
+    # Phase 1: Warm-up
+    - duration: 20
+      arrivalRate: 5
+      name: "Warm-up Phase"
+
+    # Phase 2: Steady Ramp-up to Peak
+    - duration: 60
+      arrivalRate: 15
+      rampTo: 40
+      name: "Ramp to Peak Load"
+
+    # Phase 3: The Traffic Spike (Sudden rush)
+    - duration: 20
+      arrivalRate: 60
+      name: "Flash Traffic Spike"
+
+    # Phase 4: Sustained Soak / Hold
     - duration: 30
       arrivalRate: 10
-      name: "Sustained Connection Ramp-up"
+      name: "Sustained Connection Hold"
+
   engines:
     socketio: {}
+
+  # Production SLO Gates (Fails test if conditions are violated)
   ensure:
-    maxErrorRate: 1
+    p95: 50         # 95% of response times must be under 50ms
+    p99: 100        # 99% of response times must be under 100ms
+    maxErrorRate: 1 # Error rate must stay below 1%
 
 scenarios:
-  - name: "Socket.IO concurrent hold"
+  # Scenario A: Active User (Emits events, tests progress, logs out)
+  - name: "Active Learning User"
+    weight: 40
     engine: "socketio"
     flow:
       - emit:
           channel: "authenticate"
-          data: "load-test-dummy-token"
-      # Hold the connection open to exercise concurrency / memory
-      - think: 15
+          data: "mock-jwt-token"
+      - think: 3
+      - emit:
+          channel: "progress_update"
+          data:
+            percentage: 20
+      - think: 5
+      - emit:
+          channel: "quiz_started"
+      - think: 10
+
+  # Scenario B: Passive Lurker (Opens connection, stays alive, tests server idle memory)
+  - name: "Passive Lurker"
+    weight: 60
+    engine: "socketio"
+    flow:
+      - emit:
+          channel: "authenticate"
+          data: "mock-jwt-token"
+      - think: 25 # Holds socket open without blasting network packets
