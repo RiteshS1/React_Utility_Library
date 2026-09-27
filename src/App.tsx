@@ -4,7 +4,7 @@ import { AuthProvider } from './context/AuthContext'
 import { SocketProvider } from './context/SocketContext'
 import { ProgressProvider } from './context/ProgressContext'
 import { useNPCCompanion } from './hooks/useNPCCompanion'
-import { NPCToast } from './components/NPCToast'
+import { NPCToastStack } from './components/NPCToast'
 import Sidebar from './components/Sidebar'
 import Footer from './components/Footer'
 import ProtectedRoute from './components/ProtectedRoute'
@@ -40,9 +40,9 @@ import UseWindowSizeToolkit from './pages/toolkit/UseWindowSizeToolkit'
 import './App.css'
 
 function NPCCompanion() {
-  const { current } = useNPCCompanion();
-  if (!current) return null;
-  return <NPCToast message={current.message} onDismiss={() => {}} />;
+  const { messages, dismiss } = useNPCCompanion();
+  if (messages.length === 0) return null;
+  return <NPCToastStack toasts={messages} onDismiss={dismiss} />;
 }
 
 const LEGACY_REDIRECTS = [

@@ -1,32 +1,28 @@
 import { useEffect, useState } from 'react';
 import { useSocket } from '../context/SocketContext';
 
-interface NPCMessage {
-  message: string;
+export interface NPCMessage {
   id: number;
+  message: string;
 }
 
 /**
  * useNPCCompanion
  *
  * Subscribes to the `server_toast` Socket.IO event and exposes the latest
- * NPC message. The consumer is responsible for dismissing any previous
- * toast before rendering the new one — toasts must never stack.
+ * NPC messages. Toasts now STACK — each new message is appended below the
+ * previous ones instead of dismissing them, so nothing gets lost when a
+ * second message arrives before the first auto-dismisses.
  */
 export function useNPCCompanion() {
   const { socket, connected } = useSocket();
-  const [current, setCurrent] = useState<NPCMessage | null>(null);
+  const [messages, setMessages] = useState<NPCMessage[]>([]);
 
   useEffect(() => {
     if (!socket) return;
 
     const onToast = (message: string) => {
-      // Always dismiss the previous toast before mounting a new instance.
-      setCurrent(null);
-      // Small timeout lets the unmount animation finish before the new toast mounts.
-      window.setTimeout(() => {
-        setCurrent({ message, id: Date.now() + Math.random() });
-      }, 50);
+      setMessages((prev) => [...prev, { id: Date.now() + Math.random(), message }]);
     };
 
     socket.on('server_toast', onToast);
@@ -36,7 +32,15 @@ export function useNPCCompanion() {
     };
   }, [socket]);
 
-  return { connected, current };
+  const dismiss = (id: number) => {
+    setMessages((prev) => prev.filter((m) => m.id !== id));
+  };
+
+  const dismissAll = () => {
+    setMessages([]);
+  };
+
+  return { connected, messages, dismiss, dismissAll };
 }
 
 export default useNPCCompanion;
