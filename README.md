@@ -79,10 +79,6 @@ CLIENT_URL=http://localhost:5173
 PORT=3001
 ```
 
-## License
-
-MIT
-
 ## Load Testing
 
 The backend is load-tested with Artillery to validate Socket.IO concurrency. See `server/README.md` for details.
@@ -92,4 +88,9 @@ The backend is load-tested with Artillery to validate Socket.IO concurrency. See
 cd server && npm run test:load
 ```
 
-**Results:** 300 concurrent WebSocket connections, 0 failures, sub-millisecond latency (p99: 0.2ms).
+**Results:** 3,250 virtual users across a multi-phase enterprise traffic spike, 100% success rate (0 failures), and sub-millisecond latency (p95: 0.1ms) - testing locally ofc
+
+
+## License
+
+MIT
