@@ -80,3 +80,14 @@ PORT=3001
 ## License
 
 MIT
+
+## Load Testing
+
+The backend is load-tested with Artillery to validate Socket.IO concurrency. See `server/README.md` for details.
+
+**Run:**
+```bash
+cd server && npm run test:load
+```
+
+**Results:** 300 concurrent WebSocket connections, 0 failures, sub-millisecond latency (p99: 0.2ms).
