@@ -58,18 +58,63 @@ app.get('/api/health', (req, res) => {
 
 let onlineUsers = new Set();
 
+// NPC message dictionary — emitted as `server_toast` events
+const NPC_MESSAGES = {
+  greeting: ['Hii from server!', "I'm alive hehe 🤖"],
+  login: (name) => `Welcome ${name}! Wish u luck learning React ⚛️`,
+  progress: {
+    10: 'Magic is in the DOM Chico:) ',
+    20: 'Ah! I see u made 20% progress. Kudos! 🎉',
+    50: 'Halfway there, Keep pushing through🌴',
+    80: '80% done! Ace through like a horse 🐎',
+    100: '100% completed! U da real heroo🏆',
+  },
+  quizStarted: 'Bet u cant get 20/20 in our test! hmhmm 😏',
+};
+
+const PROGRESS_THRESHOLDS = [10, 20, 50, 80, 100];
+
 io.on('connection', (socket) => {
   if (isDevelopment) {
     console.log('User connected:', socket.id);
   }
-  
+
   onlineUsers.add(socket.id);
   io.emit('userCount', onlineUsers.size);
-  
+
+  // Track which progress thresholds have been announced this session
+  const emittedThresholds = new Set();
+
+  // NPC greeting — delayed so it doesn't get lost in initial render
+  setTimeout(() => {
+    socket.emit('server_toast', NPC_MESSAGES.greeting[0]);
+    setTimeout(() => socket.emit('server_toast', NPC_MESSAGES.greeting[1]), 600);
+  }, 2000);
+
   socket.on('authenticate', (token) => {
     if (isDevelopment && token) {
       console.log('User authenticated via Socket.IO');
     }
+  });
+
+  socket.on('user_login', (payload) => {
+    const name = payload?.name || 'friend';
+    socket.emit('server_toast', NPC_MESSAGES.login(name));
+  });
+
+  socket.on('progress_update', (payload) => {
+    const percentage = Number(payload?.percentage);
+    if (Number.isNaN(percentage)) return;
+    for (const threshold of PROGRESS_THRESHOLDS) {
+      if (percentage >= threshold && !emittedThresholds.has(threshold)) {
+        emittedThresholds.add(threshold);
+        socket.emit('server_toast', NPC_MESSAGES.progress[threshold]);
+      }
+    }
+  });
+
+  socket.on('quiz_started', () => {
+    socket.emit('server_toast', NPC_MESSAGES.quizStarted);
   });
 
   socket.on('disconnect', () => {

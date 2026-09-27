@@ -90,8 +90,8 @@ const terminalLines = [
 ];
 
 const Landing: React.FC = () => {
-  const { isAuthenticated, loading } = useAuth();
-  const { onlineUsers, connected } = useSocket();
+  const { isAuthenticated, loading, user } = useAuth();
+  const { onlineUsers, connected, socket } = useSocket();
   const navigate = useNavigate();
   const location = useLocation();
   const [authOpen, setAuthOpen] = useState(false);
@@ -100,6 +100,13 @@ const Landing: React.FC = () => {
   const [demoCount, setDemoCount] = useState(0);
   const [useFunctional, setUseFunctional] = useState(true);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+
+  // Notify the NPC companion when an authenticated session is hydrated
+  useEffect(() => {
+    if (isAuthenticated && user && socket) {
+      socket.emit('user_login', { name: user.username || user.email });
+    }
+  }, [isAuthenticated, user, socket]);
 
   const redirectTo =
     (location.state as { from?: string } | null)?.from?.startsWith('/learn')

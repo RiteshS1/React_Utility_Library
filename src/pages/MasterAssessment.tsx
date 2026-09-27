@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { masterQuizQuestions, type QuizQuestion } from '../data/masterQuiz';
 import { useProgress } from '../context/ProgressContext';
+import { useSocket } from '../context/SocketContext';
 import './MasterAssessment.css';
 
 type Answers = Record<number, number | null>;
@@ -37,6 +38,7 @@ function tierFor(percent: number): { label: string; className: string } {
 
 const MasterAssessment: React.FC = () => {
   const { setQuizBestScore, quizBestScore } = useProgress();
+  const { socket } = useSocket();
   const [questions, setQuestions] = useState<QuizQuestion[]>(() => shuffle(masterQuizQuestions));
   const [answers, setAnswers] = useState<Answers>({});
   const [current, setCurrent] = useState(0);
@@ -44,6 +46,13 @@ const MasterAssessment: React.FC = () => {
   const [timerOn, setTimerOn] = useState(false);
   const [secondsLeft, setSecondsLeft] = useState(90);
   const [copied, setCopied] = useState(false);
+
+  // Notify the NPC companion that the quiz has been mounted
+  useEffect(() => {
+    if (socket) {
+      socket.emit('quiz_started');
+    }
+  }, [socket]);
 
   const q = questions[current];
   const answeredCount = Object.values(answers).filter((v) => v !== null && v !== undefined).length;

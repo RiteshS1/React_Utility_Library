@@ -3,6 +3,8 @@ import { useState } from 'react'
 import { AuthProvider } from './context/AuthContext'
 import { SocketProvider } from './context/SocketContext'
 import { ProgressProvider } from './context/ProgressContext'
+import { useNPCCompanion } from './hooks/useNPCCompanion'
+import { NPCToast } from './components/NPCToast'
 import Sidebar from './components/Sidebar'
 import Footer from './components/Footer'
 import ProtectedRoute from './components/ProtectedRoute'
@@ -37,6 +39,12 @@ import UseIntervalToolkit from './pages/toolkit/UseIntervalToolkit'
 import UseWindowSizeToolkit from './pages/toolkit/UseWindowSizeToolkit'
 import './App.css'
 
+function NPCCompanion() {
+  const { current } = useNPCCompanion();
+  if (!current) return null;
+  return <NPCToast message={current.message} onDismiss={() => {}} />;
+}
+
 const LEGACY_REDIRECTS = [
   'jsx-basics',
   'component-props',
@@ -59,6 +67,7 @@ function LearnLayout() {
   return (
     <div className="app learn-app">
       <ScrollToTop />
+      <NPCCompanion />
       <ModuleTracker />
       <Sidebar
         isOpen={isSidebarOpen}
@@ -80,6 +89,7 @@ function App() {
       <AuthProvider>
         <SocketProvider>
           <ProgressProvider>
+            <NPCCompanion />
             <Routes>
               <Route path="/" element={<Landing />} />
               <Route path="/login" element={<Navigate to="/" replace state={{ openAuth: true, authMode: 'login' }} />} />

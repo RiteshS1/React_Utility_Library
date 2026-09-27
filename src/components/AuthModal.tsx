@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useSocket } from '../context/SocketContext';
 import { AUTH_CONSTANTS } from '../constants/auth';
 import './AuthModal.css';
 
@@ -29,8 +30,16 @@ const AuthModal: React.FC<AuthModalProps> = ({
   const [verificationCode, setVerificationCode] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { login, register, confirmSignUp } = useAuth();
+  const { login, register, confirmSignUp, user } = useAuth();
+  const { socket } = useSocket();
   const navigate = useNavigate();
+
+  // Notify the NPC companion that the user logged in
+  useEffect(() => {
+    if (user && socket) {
+      socket.emit('user_login', { name: user.username || user.email });
+    }
+  }, [user, socket]);
 
   useEffect(() => {
     if (!isOpen) return;
