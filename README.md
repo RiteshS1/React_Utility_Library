@@ -8,7 +8,7 @@ Interview-grade React learning platform with Cognito auth gating, interactive sa
 - React 19 + TypeScript + Vite
 - Framer Motion (micro-interactions)
 - AWS Amplify (Cognito authentication)
-- Socket.IO Client (real-time online users)
+- Socket.IO Client (real-time NPC companion & online users)
 - Lucide icons
 
 **Backend:**
@@ -20,7 +20,8 @@ Interview-grade React learning platform with Cognito auth gating, interactive sa
 
 - **Landing + Auth Gating** — Public `/` marketing page; `/learn/*` requires Cognito session
 - **Browser & DOM Internals** — CRP visualizer, mount/hydrate phases, Synthetic Event System
-- **Hooks Playgrounds** — Live demos for fundamentals and advanced hooks
+- **Custom Hooks Toolkit** — Production-ready hooks (useDebounce, useOnClickOutside, etc.) with copy-pasteable code and interactive demos
+- **NPC Companion Backend** — Real-time contextual Socket.IO toast notifications tracking user progress and milestones
 - **Master Assessment** — 20 SDE-1/SDE-2 questions with scored review + confetti
 - **Gamification** — Progress ring, module completion checks, quiz personal best
 
@@ -41,7 +42,7 @@ Interview-grade React learning platform with Cognito auth gating, interactive sa
    ```bash
    # Terminal 1 - Backend
    cd server && npm start
-   
+
    # Terminal 2 - Frontend
    npm run dev
    ```
@@ -57,6 +58,7 @@ Visit `http://localhost:5173`
 | `/learn/critical-rendering-path` | Auth | CRP module |
 | `/learn/react-mount-hydrate` | Auth | Mount & hydrate |
 | `/learn/synthetic-events` | Auth | Synthetic event system |
+| `/learn/custom-hooks` | Auth | Custom Hooks Toolkit |
 | `/learn/master-assessment` | Auth | Master SDE quiz |
 | `/login`, `/register` | Public | Redirects to `/` and opens auth modal |
 

@@ -26,7 +26,7 @@
 }
 
 .lesson-plain::before {
-  content: 'In plain English: ';
+  content: 'Simple English: ';
   font-weight: 700;
   color: #1e3c97;
 }
