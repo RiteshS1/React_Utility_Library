@@ -1,26 +1,28 @@
 # React Mastery Learning Platform
 
-An interactive React learning platform with authentication and real-time features. Learn React fundamentals and hooks with live code examples.
+Interview-grade React learning platform with Cognito auth gating, interactive sandboxes, Browser & DOM internals curriculum, and an SDE-1/SDE-2 master assessment.
 
 ## Tech Stack
 
 **Frontend:**
-- React 19 + TypeScript
-- Vite
+- React 19 + TypeScript + Vite
+- Framer Motion (micro-interactions)
 - AWS Amplify (Cognito authentication)
-- Socket.IO Client (real-time features)
+- Socket.IO Client (real-time online users)
+- Lucide icons
 
 **Backend:**
 - Node.js + Express
-- Socket.IO (WebSocket server)
-- AWS JWT Verify (token validation)
+- Socket.IO
+- AWS JWT Verify
 
 ## Features
 
-- 🔐 **AWS Cognito Authentication** - User registration, login, email verification
-- 👥 **Real-Time User Tracking** - Live online user count
-- 📚 **Interactive Learning** - React fundamentals, hooks, and advanced topics
-- 💻 **Code Examples** - Copy-to-clipboard functionality
+- **Landing + Auth Gating** — Public `/` marketing page; `/learn/*` requires Cognito session
+- **Browser & DOM Internals** — CRP visualizer, mount/hydrate phases, Synthetic Event System
+- **Hooks Playgrounds** — Live demos for fundamentals and advanced hooks
+- **Master Assessment** — 20 SDE-1/SDE-2 questions with scored review + confetti
+- **Gamification** — Progress ring, module completion checks, quiz personal best
 
 ## Quick Start
 
@@ -46,18 +48,17 @@ An interactive React learning platform with authentication and real-time feature
 
 Visit `http://localhost:5173`
 
-## Project Structure
+## Routes
 
-```
-├── src/              # React frontend
-│   ├── components/   # UI components
-│   ├── context/      # Auth & Socket contexts
-│   ├── pages/        # Learning modules
-│   └── config/       # Amplify configuration
-└── server/           # Express backend
-    ├── middleware/   # JWT verification
-    └── routes/       # API endpoints
-```
+| Path | Access | Description |
+|------|--------|-------------|
+| `/` | Public | Landing page + Cognito auth modal |
+| `/learn` | Auth | Learning dashboard |
+| `/learn/critical-rendering-path` | Auth | CRP module |
+| `/learn/react-mount-hydrate` | Auth | Mount & hydrate |
+| `/learn/synthetic-events` | Auth | Synthetic event system |
+| `/learn/master-assessment` | Auth | Master SDE quiz |
+| `/login`, `/register` | Public | Redirects to `/` and opens auth modal |
 
 ## Environment Variables
 

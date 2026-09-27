@@ -27,20 +27,19 @@ const Home: React.FC = () => {
   ]
 
   const quickLinks = [
-    { path: '/jsx-basics', title: 'Start with JSX Basics', description: 'Learn the syntax that powers React' },
-    { path: '/use-state', title: 'Master useState', description: 'Manage component state effectively' },
-    { path: '/use-effect', title: 'Understand useEffect', description: 'Handle side effects and lifecycle' },
-    { path: '/custom-hooks', title: 'Custom Hooks', description: 'Create reusable logic patterns' }
+    { path: '/learn/critical-rendering-path', title: 'Browser & DOM Internals', description: 'CRP, mount phases, synthetic events' },
+    { path: '/learn/jsx-basics', title: 'Start with JSX Basics', description: 'Learn the syntax that powers React' },
+    { path: '/learn/use-state', title: 'Master useState', description: 'Manage component state effectively' },
+    { path: '/learn/master-assessment', title: 'SDE-1 / SDE-2 Quiz', description: '20 interview questions with deep reviews' },
   ]
 
   return (
     <div className="page">
       <div className="page-header">
-        <h1 className="page-title">Welcome to React Mastery</h1>
+        <h1 className="page-title">Learning Dashboard</h1>
         <p className="page-description">
-          Your comprehensive learning platform for React fundamentals and hooks mastery. 
-          From basic concepts to advanced patterns, learn with interactive examples and 
-          reusable code snippets.
+          Continue your path from browser internals through hooks mastery. Track progress
+          in the sidebar, then finish with the Master SDE assessment.
         </p>
       </div>
 

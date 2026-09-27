@@ -4,10 +4,8 @@
   line-height: 1.5;
   font-weight: 400;
   color-scheme: light;
-  
   color: rgba(20, 20, 20, 0.87);
-  background-color: #ffffff;
-  
+  background-color: #fafafa;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -24,13 +22,13 @@ body {
   padding: 0;
   min-height: 100vh;
   font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  background-color: #fafafa;
 }
 
 #root {
   min-height: 100vh;
 }
 
-/* Typography */
 h1, h2, h3, h4, h5, h6 {
   font-weight: 600;
   line-height: 1.25;
@@ -51,7 +49,6 @@ a:hover {
   text-decoration: underline;
 }
 
-/* Form Elements */
 button {
   cursor: pointer;
   transition: all 0.2s ease;
@@ -66,7 +63,6 @@ input, textarea, select {
   font-size: inherit;
 }
 
-/* Scrollbar Styling */
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -84,7 +80,6 @@ input, textarea, select {
   background: #a8a8a8;
 }
 
-/* Code Styling */
 code {
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
   background-color: #f5f5f5;
@@ -93,12 +88,58 @@ code {
   font-size: 0.875em;
 }
 
-/* Animations */
 @keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.auth-loading {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  background: #fafafa;
+  color: #64748b;
+}
+
+.auth-loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #e2e8f0;
+  border-top-color: #1e3c97;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.progress-ring {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.progress-ring-bg {
+  stroke: rgba(255, 255, 255, 0.15);
+}
+
+.progress-ring-fg {
+  stroke: #fbbf24;
+  transition: stroke-dashoffset 0.4s ease;
+}
+
+.progress-ring-text {
+  fill: white;
+  font-size: 9px;
+  font-weight: 700;
+  font-family: inherit;
+}
+
+.progress-ring-label {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.7);
 }

@@ -1,12 +1,16 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from 'react-router-dom'
 import { useState } from 'react'
 import { AuthProvider } from './context/AuthContext'
 import { SocketProvider } from './context/SocketContext'
+import { ProgressProvider } from './context/ProgressContext'
 import Sidebar from './components/Sidebar'
 import Footer from './components/Footer'
+import ProtectedRoute from './components/ProtectedRoute'
+import ModuleTracker from './components/ModuleTracker'
+import ScrollToTop from './components/ScrollToTop'
+import LessonNav from './components/LessonNav'
+import Landing from './pages/Landing'
 import Home from './pages/Home'
-import Login from './pages/Login'
-import Register from './pages/Register'
 import JSXBasics from './pages/JSXBasics'
 import ComponentProps from './pages/ComponentProps'
 import EventHandling from './pages/EventHandling'
@@ -20,47 +24,95 @@ import UseMemoHook from './pages/UseMemoHook'
 import UseCallbackHook from './pages/UseCallbackHook'
 import UseRefHook from './pages/UseRefHook'
 import CustomHooks from './pages/CustomHooks'
+import CriticalRenderingPath from './pages/CriticalRenderingPath'
+import ReactMountHydrate from './pages/ReactMountHydrate'
+import SyntheticEventSystem from './pages/SyntheticEventSystem'
+import MasterAssessment from './pages/MasterAssessment'
 import './App.css'
 
-function App() {
+const LEGACY_REDIRECTS = [
+  'jsx-basics',
+  'component-props',
+  'event-handling',
+  'conditional-rendering',
+  'lists-and-keys',
+  'use-state',
+  'use-effect',
+  'use-context',
+  'use-reducer',
+  'use-memo',
+  'use-callback',
+  'use-ref',
+  'custom-hooks',
+] as const
+
+function LearnLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen)
-  }
+  return (
+    <div className="app learn-app">
+      <ScrollToTop />
+      <ModuleTracker />
+      <Sidebar
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
+        onToggle={() => setIsSidebarOpen((o) => !o)}
+      />
+      <main className="main-content">
+        <Outlet />
+        <LessonNav />
+      </main>
+      <Footer />
+    </div>
+  )
+}
 
-  const closeSidebar = () => {
-    setIsSidebarOpen(false)
-  }
-
+function App() {
   return (
     <Router>
       <AuthProvider>
         <SocketProvider>
-          <div className="app">
-            <Sidebar isOpen={isSidebarOpen} onClose={closeSidebar} onToggle={toggleSidebar} />
-            <main className="main-content">
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-                <Route path="/jsx-basics" element={<JSXBasics />} />
-                <Route path="/component-props" element={<ComponentProps />} />
-                <Route path="/event-handling" element={<EventHandling />} />
-                <Route path="/conditional-rendering" element={<ConditionalRendering />} />
-                <Route path="/lists-and-keys" element={<ListsAndKeys />} />
-                <Route path="/use-state" element={<UseStateHook />} />
-                <Route path="/use-effect" element={<UseEffectHook />} />
-                <Route path="/use-context" element={<UseContextHook />} />
-                <Route path="/use-reducer" element={<UseReducerHook />} />
-                <Route path="/use-memo" element={<UseMemoHook />} />
-                <Route path="/use-callback" element={<UseCallbackHook />} />
-                <Route path="/use-ref" element={<UseRefHook />} />
-                <Route path="/custom-hooks" element={<CustomHooks />} />
-              </Routes>
-            </main>
-            <Footer />
-          </div>
+          <ProgressProvider>
+            <Routes>
+              <Route path="/" element={<Landing />} />
+              <Route path="/login" element={<Navigate to="/" replace state={{ openAuth: true, authMode: 'login' }} />} />
+              <Route path="/register" element={<Navigate to="/" replace state={{ openAuth: true, authMode: 'register' }} />} />
+
+              <Route
+                path="/learn"
+                element={
+                  <ProtectedRoute>
+                    <LearnLayout />
+                  </ProtectedRoute>
+                }
+              >
+                <Route index element={<Home />} />
+                <Route path="critical-rendering-path" element={<CriticalRenderingPath />} />
+                <Route path="react-mount-hydrate" element={<ReactMountHydrate />} />
+                <Route path="synthetic-events" element={<SyntheticEventSystem />} />
+                <Route path="jsx-basics" element={<JSXBasics />} />
+                <Route path="component-props" element={<ComponentProps />} />
+                <Route path="event-handling" element={<EventHandling />} />
+                <Route path="conditional-rendering" element={<ConditionalRendering />} />
+                <Route path="lists-and-keys" element={<ListsAndKeys />} />
+                <Route path="use-state" element={<UseStateHook />} />
+                <Route path="use-effect" element={<UseEffectHook />} />
+                <Route path="use-context" element={<UseContextHook />} />
+                <Route path="use-reducer" element={<UseReducerHook />} />
+                <Route path="use-memo" element={<UseMemoHook />} />
+                <Route path="use-callback" element={<UseCallbackHook />} />
+                <Route path="use-ref" element={<UseRefHook />} />
+                <Route path="custom-hooks" element={<CustomHooks />} />
+                <Route path="master-assessment" element={<MasterAssessment />} />
+              </Route>
+
+              {LEGACY_REDIRECTS.map((slug) => (
+                <Route key={slug} path={`/${slug}`} element={<Navigate to={`/learn/${slug}`} replace />} />
+              ))}
+
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </ProgressProvider>
         </SocketProvider>
       </AuthProvider>
     </Router>
